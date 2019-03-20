@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/status_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ocr_header"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/text_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margin"
+            android:background="@drawable/dashed_line"
+            android:minHeight="@dimen/text_value_min_height"
+            android:paddingLeft="5dp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/read_text_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/button_margin_top"
+            android:background="@color/colorAccent"
+            android:text="@string/read_text"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/text_to_speech_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/button_margin_top"
+            android:background="@color/colorAccent"
+            android:enabled="false"
+            android:text="@string/text_to_speech_text"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/copy_text_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/button_margin_top"
+            android:background="@color/colorAccent"
+            android:text="@string/copy_text"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/mail_text_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/button_margin_top"
+            android:background="@color/colorAccent"
+            android:text="send via whatsapp"
+            android:textColor="@android:color/white" />
+        <Button
+            android:id="@+id/save_text_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/button_margin_top"
+            android:background="@color/colorAccent"
+            android:text="Save"
+            android:textColor="@android:color/white" />
+        <Button
+            android:id="@+id/history_text_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/button_margin_top"
+            android:background="@color/colorAccent"
+            android:text="History"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</ScrollView>
