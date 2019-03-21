@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.asus.ocrreaderwithtxttospeech.MainActivity;
@@ -25,19 +26,36 @@ public class Login extends AppCompatActivity {
     TextInputLayout userphone,passp;
     String url="http://srishti-systems.info/projects/ocr/login.php?";
 
-
+    SharedPreferences shared;
     Button login,signup;
+    TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        shared = getSharedPreferences("login",MODE_PRIVATE);
+
+        if(shared.getBoolean("logged",false)) {
+            Intent in = new Intent(Login.this, MainActivity.class);
+            startActivity(in);
+        }
         client=new AsyncHttpClient();
         params=new RequestParams();
         userphone=findViewById(R.id.ocrphone);
         passp=findViewById(R.id.ocrpass);
         login=findViewById(R.id.login);
         signup=findViewById(R.id.signup);
+        textView=findViewById(R.id.forget);
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent ik=new Intent(Login.this,Forget_password.class);
+                startActivity(ik);
+
+            }
+        });
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +92,7 @@ public class Login extends AppCompatActivity {
                                 Intent i = new Intent(Login.this, MainActivity.class);
                                 startActivity(i);
 
-
+                                shared.edit().putBoolean("logged",true).apply();
                             }
 
 

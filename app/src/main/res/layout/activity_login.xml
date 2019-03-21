@@ -18,7 +18,8 @@
             android:id="@+id/loguser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#ffff" android:hint="   Email"
+            android:backgroundTint="#ffff"
+            android:hint="   Email"
             android:inputType="textEmailAddress"
             android:textColor="#cccccc"
             android:textSize="20sp" />
@@ -42,6 +43,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <TextView
+        android:id="@+id/forget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"

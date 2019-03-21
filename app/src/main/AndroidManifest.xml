@@ -9,11 +9,12 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/corona"
+        android:icon="@drawable/bg"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/corona"
+        android:roundIcon="@drawable/bg"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".utilities.Forget_password"></activity>
         <activity android:name=".utilities.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,9 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".utilities.Registration" />
-        <activity android:name=".utilities.Login">
-
-        </activity>
+        <activity android:name=".utilities.Login"></activity>
         <activity android:name=".MainActivity">
             <meta-data
                 android:name="com.google.android.gms.vision.DEPENDENCIES"

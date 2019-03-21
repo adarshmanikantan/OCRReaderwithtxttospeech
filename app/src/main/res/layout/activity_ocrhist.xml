@@ -8,15 +8,17 @@
     >
 
 
- <SearchView
-     android:id="@+id/search"
+
+ <android.support.v7.widget.SearchView
+     android:id="@+id/searchv"
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
-     ></SearchView>
+     ></android.support.v7.widget.SearchView>
+
     <ListView
         android:id="@+id/lview"
-        android:layout_width="392dp"
-        android:layout_height="610dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"

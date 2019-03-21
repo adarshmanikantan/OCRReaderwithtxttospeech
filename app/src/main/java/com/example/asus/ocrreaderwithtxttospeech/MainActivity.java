@@ -3,6 +3,7 @@ package com.example.asus.ocrreaderwithtxttospeech;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +46,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.util.Locale;
+import java.util.zip.Inflater;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -63,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements onInputPitchListn
     private Button save;
     private Button history;
     boolean isPlaying = false;
-    private float pitch,speed;
-
+    private float pitch, speed;
+    Toolbar toolbar;
     private static final int RC_OCR_CAPTURE = 9003;
     private static final String TAG = "MainActivity";
 
@@ -74,16 +77,32 @@ public class MainActivity extends AppCompatActivity implements onInputPitchListn
     RequestParams params;
     JSONObject obj1;
 
-    String url="http://srishti-systems.info/projects/ocr/string.php?";
+    String url = "http://srishti-systems.info/projects/ocr/string.php?";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        statusMessage = (TextView)findViewById(R.id.status_message);
-        textValue = (TextView)findViewById(R.id.text_value);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        statusMessage = (TextView) findViewById(R.id.status_message);
+        textValue = (TextView) findViewById(R.id.text_value);
 
 
+        toolbar.inflateMenu(R.menu.logout);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.log) {
+                    SharedPreferences shared = getSharedPreferences("login", MODE_PRIVATE);
+                    SharedPreferences.Editor ed = shared.edit();
+                    ed.putBoolean("logged", false);
+                    ed.commit();
+                    finishAffinity();
+                }
+                return false;
+            }
+        });
         Button readTextButton = (Button) findViewById(R.id.read_text_button);
         readTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements onInputPitchListn
         copyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
                     android.text.ClipboardManager clipboard =
                             (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                     clipboard.setText(textValue.getText().toString());
@@ -141,41 +160,39 @@ public class MainActivity extends AppCompatActivity implements onInputPitchListn
 //                } catch (android.content.ActivityNotFoundException ex) {
 //                    Toast.makeText(getApplicationContext(),
 //                            R.string.no_email_client_error, Toast.LENGTH_SHORT).show()
-  //              }
+                //              }
             }
         });
 
         textToSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-              if (status == TextToSpeech.SUCCESS){
-                  int result = textToSpeech.setLanguage(Locale.ENGLISH);
-                  if (result == TextToSpeech.LANG_MISSING_DATA
-                          || result == TextToSpeech.LANG_NOT_SUPPORTED){
-                      Log.e("Text to speech","Language not supported");
-                  }else {
-                      textTospeechButton.setEnabled(true);
-                  }
-              }else {
-                  Log.e("Text to speech","Initialization failed");
-              }
+                if (status == TextToSpeech.SUCCESS) {
+                    int result = textToSpeech.setLanguage(Locale.ENGLISH);
+                    if (result == TextToSpeech.LANG_MISSING_DATA
+                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Log.e("Text to speech", "Language not supported");
+                    } else {
+                        textTospeechButton.setEnabled(true);
+                    }
+                } else {
+                    Log.e("Text to speech", "Initialization failed");
+                }
             }
         });
 
-        textTospeechButton = (Button)findViewById(R.id.text_to_speech_button);
+        textTospeechButton = (Button) findViewById(R.id.text_to_speech_button);
         textTospeechButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isPlaying) {
-                   textToSpeech.stop();
-                   textTospeechButton.setText("Speak");
-                }else{
+                    textToSpeech.stop();
+                    textTospeechButton.setText("Speak");
+                } else {
                     textTospeechButton.setText("Stop");
                     speak();
                 }
                 isPlaying = !isPlaying;
-
-
 
 
             }
@@ -185,19 +202,17 @@ public class MainActivity extends AppCompatActivity implements onInputPitchListn
         client = new AsyncHttpClient();
         params = new RequestParams();
 
-        save=findViewById(R.id.save_text_button);
-        SharedPreferences sp=getApplicationContext()
-                .getSharedPreferences("d1",MODE_PRIVATE);
-        final String sid=sp.getString("did",null);
+        save = findViewById(R.id.save_text_button);
+        SharedPreferences sp = getApplicationContext()
+                .getSharedPreferences("d1", MODE_PRIVATE);
+        final String sid = sp.getString("did", null);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(textValue.getText()=="")
-                {
-                    Toast.makeText(getApplicationContext(),"Empty text field",Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if (textValue.getText() == "") {
+                    Toast.makeText(getApplicationContext(), "Empty text field", Toast.LENGTH_SHORT).show();
+                } else {
                     LayoutInflater inflat = LayoutInflater.from(MainActivity.this);
                     View cuslay = inflat.inflate(R.layout.title, null);
 
@@ -258,17 +273,17 @@ public class MainActivity extends AppCompatActivity implements onInputPitchListn
                     });
 
                 }
-                }
+            }
         });
-        history=findViewById(R.id.history_text_button);
+        history = findViewById(R.id.history_text_button);
         history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent k=new Intent(MainActivity.this, OChist.class);
+                Intent k = new Intent(MainActivity.this, OChist.class);
                 startActivity(k);
             }
         });
-        String s= getIntent().getStringExtra("key1");
+        String s = getIntent().getStringExtra("key1");
         textValue.setText(s);
     }
 
@@ -276,22 +291,22 @@ public class MainActivity extends AppCompatActivity implements onInputPitchListn
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu,menu);
+        inflater.inflate(R.menu.menu, menu);
         menu.setHeaderTitle("Select your Action");
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.pitchOption){
+        if (item.getItemId() == R.id.pitchOption) {
             PitchFragment pitchFragment = new PitchFragment();
-            pitchFragment.show(getSupportFragmentManager(),"PitchFargment");
+            pitchFragment.show(getSupportFragmentManager(), "PitchFargment");
         }
-        if (item.getItemId() == R.id.speedOption){
-           SpeedFragment speedFragment = new SpeedFragment();
-           speedFragment.show(getFragmentManager(),"SpeedFragment");
+        if (item.getItemId() == R.id.speedOption) {
+            SpeedFragment speedFragment = new SpeedFragment();
+            speedFragment.show(getFragmentManager(), "SpeedFragment");
+        } else {
+            return false;
         }
-        else {
-            return false;}
         return true;
     }
 
@@ -312,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements onInputPitchListn
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == RC_OCR_CAPTURE) {
+        if (requestCode == RC_OCR_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
                     String text = data.getStringExtra(OcrCaptureActivity.TextBlockObject);
@@ -327,23 +342,42 @@ public class MainActivity extends AppCompatActivity implements onInputPitchListn
                 statusMessage.setText(String.format(getString(R.string.ocr_error),
                         CommonStatusCodes.getStatusCodeString(resultCode)));
             }
-        }
-        else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void speak(){
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finishAffinity();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+
+
+    }
+
+    private void speak() {
 
         String text = textValue.getText().toString();
         textToSpeech.setPitch(pitch);
         textToSpeech.setSpeechRate(speed);
-        textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null);
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     @Override
     protected void onDestroy() {
-        if (textToSpeech != null){
+        if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();
         }
@@ -352,13 +386,12 @@ public class MainActivity extends AppCompatActivity implements onInputPitchListn
 
     @Override
     public void sentPitchInput(String input) {
-        pitch = (float)Float.parseFloat(input);
+        pitch = (float) Float.parseFloat(input);
     }
 
     @Override
     public void sentSpeedInput(String input) {
-        speed = (float)Float.parseFloat(input);
+        speed = (float) Float.parseFloat(input);
     }
 
 }
-
